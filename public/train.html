@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Train Agent</title>
+  <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Train an Agent</h1>
+  </header>
+  <main>
+    <form id="trainForm" enctype="multipart/form-data">
+      <label for="name">Agent Name:</label>
+      <input type="text" id="name" name="name" required>
+
+      <label for="description">Description:</label>
+      <textarea id="description" name="description" rows="4" required></textarea>
+
+      <label for="data">Upload Data (.zip):</label>
+      <input type="file" id="data" name="data" accept=".zip" required>
+
+      <button type="submit">Train</button>
+    </form>
+    <div id="responseMessage"></div>
+  </main>
+  <script>
+    const trainForm = document.getElementById('trainForm');
+    const responseMessage = document.getElementById('responseMessage');
+
+    trainForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const formData = new FormData(trainForm);
+
+      try {
+        const token = localStorage.getItem('offload-token'); // Ensure the user is authenticated
+        const response = await fetch('/api/agents/train', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          body: formData
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+          debugger;
+          responseMessage.textContent = `Training started successfully! ID: ${result.id}`;
+        } else {
+          responseMessage.textContent = `Error: ${result.message}`;
+        }
+      } catch (error) {
+        responseMessage.textContent = `Error: ${error.message}`;
+      }
+    });
+  </script>
+</body>
+</html>
+

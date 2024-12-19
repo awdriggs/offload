@@ -6,9 +6,25 @@ const generateTriggerWord = (length) => {
 };
 
 // Define the schema for the "Agent" collection
+// need a place for the trained image url
 const agentSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   trigger: { type: String, required: true, default: () => generateTriggerWord(10) },
+  modelName: { type: String, required: true },
+  modelDesc: { type: String, required: true },
+  url: {
+    type: String,
+    required: true,
+    validate: {
+      validator: function (value) {
+        // Validate the URL using a regular expression
+        const urlRegex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+        return urlRegex.test(value);
+      },
+      message: (props) => `${props.value} is not a valid URL`,
+    },
+  },
+  status: { type: String, default: "pending" },
   createdAt: { type: Date, default: Date.now },
 });
 

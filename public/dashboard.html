@@ -13,55 +13,14 @@
 
   <main>
     <p>Hello, <span id="username"></span>!</p>
-    <!-- <a href="train.html">new model</a> --><button id="test">new model</button>
-    <h2>Your Models</h2>
+    <a href="train.html">new model</a> <!-- <button id="test">new model</button> -->
+
+    <h2>Your Agents</h2>
+
+    <section id='user-agents'>
+    </section>
   </main>
-  <script>
-    const user = JSON.parse(localStorage.getItem('offload-user'));
-
-    if (!user) {
-      alert('Please log in to access the dashboard.');
-      window.location.href = '/login.html';
-    } else {
-      document.getElementById('username').textContent = user.username;
-    //  document.getElementById('trigger').textContent = user.trigger;
-    }
-
-    let button = document.querySelector("#test");
-
-    button.addEventListener("click", async () => {
-      console.log("test");
-
-      const user = JSON.parse(localStorage.getItem("offload-user"));
-      const token = localStorage.getItem("offload-token"); // Assuming the JWT token is stored in localStorage
-
-  if (!token) {
-    console.log("No token found. Please log in.");
-    return;
-  }
-
-  try {
-    const response = await fetch('/api/agents/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`, // Include the JWT token in the Authorization header
-      },
-      body: JSON.stringify({ trigger: "EXAMPLE_TRIGGER" }), // Replace with your actual trigger word
-    });
-
-    const result = await response.json();
-    if (response.ok) {
-      console.log("Agent added successfully:", result);
-    } else {
-      console.log("Error adding agent:", result.message);
-    }
-  } catch (error) {
-    console.error("Error making request:", error.message);
-  }
-  });
-     
-     
+  <script src="/js/dashboard.js">
   </script>
 </body>
 </html>

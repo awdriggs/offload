@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Details</title>
+  <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Agent Details</h1>
+  </header>
+  <main>
+    <div id="agent-info">
+      <h2 id="agent-name"></h2>
+      <p id="agent-description"></p>
+      <p><strong>Trigger:</strong> <span id="agent-trigger"></span></p>
+      <p><strong>Created By:</strong> <span id="agent-user"></span></p>
+    </div>
+  </main>
+  <script>
+    // Extract agent ID from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const agentId = window.location.pathname.split('/')[2];
+
+    async function fetchAgentData(agentId) {
+      try {
+        const token = localStorage.getItem('offload-token'); // JWT token for authentication
+
+        const response = await fetch(`/api/agents/${agentId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          debugger;
+          renderAgent(result.agent);
+        } else {
+          console.error('Error fetching agent:', result.message);
+          alert('Failed to fetch agent data');
+        }
+      } catch (error) {
+        console.error('Error:', error.message);
+      }
+    }
+
+    function renderAgent(agent) {
+      document.getElementById('agent-name').textContent = agent.modelName || 'Unnamed Agent';
+      document.getElementById('agent-description').textContent = agent.modelDesc || 'No description provided';
+      document.getElementById('agent-trigger').textContent = agent.trigger;
+      document.getElementById('agent-user').textContent = agent.user.username || 'Unknown User';
+    }
+
+    // Fetch agent data on page load
+    fetchAgentData(agentId);
+  </script>
+</body>
+</html>
+
